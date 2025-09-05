@@ -7,4 +7,4 @@ def show_main(request):
         'class': 'PBP F'
     }
     
-    return render(request, "main.html", context)
+    return render(request, "templates/main.html", context)
