@@ -6,4 +6,5 @@ def show_main(request):
         'name': 'Muhammad Derriel Ramadhan',
         'class': 'PBP F'
     }
+    
     return render(request, "main.html", context)
