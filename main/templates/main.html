@@ -1,6 +1,68 @@
-<h5>Nama Aplikasi: </h5>
-<p>{{ nama_aplikasi }}</p>
-<h5>Name: </h5>
-<p>{{ name }}<p>
-<h5>Class: </h5>
-<p>{{ class }}</p>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Pengguna</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5; /* Warna abu-abu muda */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .profile-card {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px; /* Membuat sudut kartu melengkung */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Memberi efek bayangan */
+            width: 90%;
+            max-width: 400px; /* Lebar maksimum kartu */
+            box-sizing: border-box;
+        }
+
+        .profile-card h5 {
+            color: #555; /* Warna abu-abu tua untuk teks label */
+            font-size: 14px;
+            margin-bottom: 5px; /* Jarak bawah dari label ke data */
+            font-weight: bold;
+            text-transform: uppercase; /* Membuat teks jadi huruf kapital */
+            letter-spacing: 0.5px;
+        }
+
+        .profile-card p {
+            color: #2c3e50; /* Warna biru tua untuk teks data */
+            font-size: 1.3em; /* Ukuran font lebih besar untuk data */
+            margin-top: 0;
+            margin-bottom: 25px; /* Jarak antar setiap item info */
+            font-weight: 500;
+            border-bottom: 1px solid #eee; /* Garis pemisah tipis */
+            padding-bottom: 10px;
+        }
+
+        .profile-card p:last-of-type {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="profile-card">
+        <h5>Nama Aplikasi: </h5>
+        <p>{{ nama_aplikasi }}</p>
+        
+        <h5>Name: </h5>
+        <p>{{ name }}<p>
+        
+        <h5>Class: </h5>
+        <p>{{ class }}</p>
+    </div>
+
+</body>
+</html>
