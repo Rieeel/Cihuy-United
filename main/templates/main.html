@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5; /* Warna abu-abu muda */
+            background-color: #f4f4f4;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -16,52 +16,72 @@
         }
 
         .profile-card {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px; /* Membuat sudut kartu melengkung */
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Memberi efek bayangan */
+            background-color: #fafafa; 
+            padding: 40px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
             width: 90%;
-            max-width: 400px; /* Lebar maksimum kartu */
+            max-width: 350px;
             box-sizing: border-box;
+            text-align: center; /* KUNCI: Membuat semua teks di dalam kartu menjadi rata tengah */
         }
 
-        .profile-card h5 {
-            color: #007bff; /* DIUBAH: dari #555 menjadi biru cerah */
-            font-size: 14px;
-            margin-bottom: 5px; 
-            font-weight: bold;
-            text-transform: uppercase; 
-            letter-spacing: 0.5px;
-        }
-
-        .profile-card p {
-            color: #212529; /* DIUBAH: dari #2c3e50 menjadi hitam pekat */
-            font-size: 1.3em; 
+        .profile-card h1 {
+            color: #1a4a8d; /* Warna biru tua yang solid */
+            font-size: 2.5em; /* Ukuran font lebih besar */
             margin-top: 0;
-            margin-bottom: 25px; 
-            font-weight: 500;
-            border-bottom: 1px solid #eee; 
-            padding-bottom: 10px;
+            margin-bottom: 35px; /* Jarak bawah yang lebih besar */
         }
 
-        .profile-card p:last-of-type {
-            margin-bottom: 0;
-            border-bottom: none;
-            padding-bottom: 0;
+        /* Kontainer untuk setiap baris info (NPM, Name, Class) */
+        .info-block {
+            margin-bottom: 20px; /* Memberi jarak antar blok info */
         }
+        
+        /* Style untuk label seperti "NPM", "Name", "Class" */
+        .profile-card .label {
+            color: #ff0000ff; /* Warna abu-abu gelap */
+            font-size: 1em;
+            font-weight: normal; /* Dibuat tidak tebal */
+            margin: 0;
+        }
+
+        /* Style untuk value/isi data */
+        .profile-card .value {
+            color: #212529;
+            font-size: 1.2em; 
+            margin-top: 4px; /* Sedikit jarak dari label di atasnya */
+            margin-bottom: 0;
+            font-weight: 500;
+        }
+
+        /* Style untuk footer copyright */
+        .profile-card .footer {
+            margin-top: 40px; /* Jarak dari konten terakhir */
+            font-size: 0.9em;
+            color: #888; /* Warna abu-abu muda */
+        }
+
     </style>
 </head>
 <body>
 
     <div class="profile-card">
+        <h1>Cihuy United</h1>
+
         <h5>Nama Aplikasi: </h5>
         <p>{{ nama_aplikasi }}</p>
-        
+
+        <h5>NPM: </h5>
+        <p>{{ npm }}</p>
+
         <h5>Name: </h5>
         <p>{{ name }}<p>
-        
+
         <h5>Class: </h5>
         <p>{{ class }}</p>
+        
+        <p class="footer">© 2025 Cihuy United</p>
     </div>
 
 </body>
