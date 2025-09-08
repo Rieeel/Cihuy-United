@@ -13,6 +13,9 @@ https://muhammad-derriel-cihuyunited.pbp.cs.ui.ac.id/
 2. Buatlah bagan yang berisi request client ke web aplikasi berbasis Django beserta responnya dan jelaskan pada bagan tersebut kaitan antara urls.py, views.py, models.py, dan berkas html.
 
     Permintaan klien ke aplikasi web Django dimulai saat browser meminta URL-> yang pertama kali ditangani oleh urls.py untuk menemukan pola URL yang cocok -> lalu mengarahkannya ke fungsi atau kelas yang sesuai dalam views.py -> Views.py kemudian menjadi pusat logika, di mana ia dapat berinteraksi dengan basis data melalui models.py untuk mengambil, menyimpan, atau memanipulasi data yang diperlukan ->  Setelah data siap, views.py merendernya ke dalam berkas HTML (template), yang berisi placeholder untuk menampilkan data tersebut -> Setelah template terisi penuh, Django mengirimkan halaman HTML yang sudah selesai sebagai respons kembali ke browser klien, sehingga pengguna dapat melihat halaman web yang diminta.
+
+    https://drive.google.com/drive/folders/1ZsF7-w8VMhrZtEJHsVNNLAvnqJUMlgva?usp=sharing (bagan alur)
+
 3.  Jelaskan peran settings.py dalam proyek Django!
     tugas adalah Setting.py mendefinisikan koneksi ke database, mendaftarkan semua aplikasi yang aktif (INSTALLED_APPS), dan mengelola pengaturan keamanan krusial seperti SECRET_KEY dan DEBUG. Selain itu, file ini juga mengontrol bagaimana template (HTML) ditemukan dan di-render, menangani lokasi file statis (CSS, JavaScript), dan menentukan konfigurasi URL utama, sehingga secara efektif menjadi pusat kendali yang menentukan seluruh perilaku dan arsitektur aplikasi web Anda.
 4.  Bagaimana cara kerja migrasi database di Django?
