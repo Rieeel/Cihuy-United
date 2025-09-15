@@ -1,0 +1,33 @@
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            {% extends 'base.html' %}
+{% block content %}
+<div class="form-container" style="max-width: 400px; margin: 40px auto; background: #fafafa; padding: 32px 24px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.08);">
+    <h1 style="text-align:center; color:#1a4a8d; margin-bottom:24px;">Add Product</h1>
+    <form method="POST">
+        {% csrf_token %}
+        <table style="width:100%; margin-bottom:16px;">
+            {{ form.as_table }}
+            <tr>
+                <td></td>
+                <td>
+                    <input type="submit" value="Add Product!" style="background:#1a4a8d; color:#fff; border:none; padding:8px 18px; border-radius:4px; cursor:pointer; font-weight:500;" />
+                </td>
+            </tr>
+        </table>
+    </form>
+    {% if error %}
+    <div style="background:#ffeaea; color:#d8000c; border-radius:4px; padding:12px; margin-bottom:16px;">
+        <h3 style="margin-top:0;">Oops! Ada error:</h3>
+        <ul style="padding-left:18px;">
+            {% for field, errors in error.items %}
+                {% for err in errors %}
+                    <li>{{ err }}</li>
+                {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    <div style="text-align:center; margin-top:18px;">
+        <a href="{% url 'main:show_main' %}" style="color:#1a4a8d; text-decoration:underline;">← Back to Home</a>
+    </div>
+</div>
+{% endblock %}
