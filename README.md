@@ -7,20 +7,37 @@ Kelas : PBP F
 
 https://muhammad-derriel-cihuyunited.pbp.cs.ui.ac.id/
 
-1. Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial)
-    Pertama kita nyalain dulu python env nya lalu membuat project django baru dengan django-admin startproject (nama project) lalu kita semua terlebih dahulu seperti allowed host,env prod,env,database dan pws nya , setelah itu kita buat django start app main dan mengganti models dengan apa yag disuruh lalu kita routing main agar bisa dijalankan setelah itu kita buat fungsi dalam views untuk menampilkan nama apps dll setelah itu kita deploy ke pws
+1. Jelaskan mengapa kita memerlukan data delivery dalam pengimplementasian sebuah platform?
+    Data delivery pada dasarnya adalah proses mengantarkan data dari satu titik ke titik lain (misalnya dari server ke client, antar service, atau antar pengguna) dengan cara yang tepat, cepat, aman, dan dapat diandalkan.
+    Kita memerlukan data delivery dalam pengimplementasian sebuah platform karena:
+    -Akses Informasi oleh Pengguna
+    Platform apa pun (e-commerce, media sosial, sistem akademik, dsb.) bergantung pada data. Tanpa mekanisme pengantaran data yang baik, pengguna tidak bisa melihat produk, mengakses profil, atau membaca konten secara real-time.
+    -Konsistensi dan Keakuratan Data
+    Data delivery memastikan informasi yang diterima pengguna selalu konsisten dengan yang ada di server. Contoh: ketika kamu melakukan transaksi, data pembayaran harus dikirim dan diproses tanpa salah agar saldo, stok, dan status pesanan sinkron.
+    -Kecepatan dan Efisiensi
+    Pengguna menuntut platform yang responsif. Data delivery yang baik mengoptimalkan waktu pengiriman sehingga platform bisa cepat, misalnya lewat caching, CDN, atau protokol komunikasi efisien.
+    -Keamanan Data
+    Dalam platform, data seringkali sensitif (password, data pribadi, transaksi). Mekanisme data delivery yang baik akan melibatkan enkripsi dan autentikasi supaya tidak mudah disadap atau dimanipulasi pihak ketiga.
 
-2. Buatlah bagan yang berisi request client ke web aplikasi berbasis Django beserta responnya dan jelaskan pada bagan tersebut kaitan antara urls.py, views.py, models.py, dan berkas html.
 
-    Permintaan klien ke aplikasi web Django dimulai saat browser meminta URL-> yang pertama kali ditangani oleh urls.py untuk menemukan pola URL yang cocok -> lalu mengarahkannya ke fungsi atau kelas yang sesuai dalam views.py -> Views.py kemudian menjadi pusat logika, di mana ia dapat berinteraksi dengan basis data melalui models.py untuk mengambil, menyimpan, atau memanipulasi data yang diperlukan ->  Setelah data siap, views.py merendernya ke dalam berkas HTML (template), yang berisi placeholder untuk menampilkan data tersebut -> Setelah template terisi penuh, Django mengirimkan halaman HTML yang sudah selesai sebagai respons kembali ke browser klien, sehingga pengguna dapat melihat halaman web yang diminta.
+2. Menurutmu, mana yang lebih baik antara XML dan JSON? Mengapa JSON lebih populer dibandingkan XML?
+    JSON lebih populer dibandingkan XML karena lebih ringkas, mudah dibaca, lebih cepat diproses, dan langsung kompatibel dengan banyak bahasa pemrograman serta web modern. Sementara XML cenderung lebih berat dan kompleks, sehingga sekarang lebih banyak dipakai di sistem lama atau kebutuhan data yang sangat detail.
 
-    https://drive.google.com/drive/folders/1ZsF7-w8VMhrZtEJHsVNNLAvnqJUMlgva?usp=sharing (bagan alur)
+3.  Jelaskan fungsi dari method is_valid() pada form Django dan mengapa kita membutuhkan method tersebut?
+    is_valid() pada form Django berfungsi untuk memeriksa apakah data yang dimasukkan pengguna sesuai aturan validasi. Kita membutuhkannya agar hanya data yang benar, aman, dan sesuai format yang diproses atau disimpan ke database.
 
-3.  Jelaskan peran settings.py dalam proyek Django!
-    tugas adalah Setting.py mendefinisikan koneksi ke database, mendaftarkan semua aplikasi yang aktif (INSTALLED_APPS), dan mengelola pengaturan keamanan krusial seperti SECRET_KEY dan DEBUG. Selain itu, file ini juga mengontrol bagaimana template (HTML) ditemukan dan di-render, menangani lokasi file statis (CSS, JavaScript), dan menentukan konfigurasi URL utama, sehingga secara efektif menjadi pusat kendali yang menentukan seluruh perilaku dan arsitektur aplikasi web Anda.
-4.  Bagaimana cara kerja migrasi database di Django?
-    Migrasi database di Django dilakukan dalam dua langkah. Pertama, perintah makemigrations dijalankan setelah kode model (models.py) diubah, yang bertugas mendeteksi perubahan tersebut dan membuat file Python yang berisi instruksi migrasi, tanpa menyentuh database. Kedua, perintah migrate kemudian menerjemahkan instruksi dari file tersebut ke dalam perintah SQL dan menerapkannya langsung pada database, secara fisik mengubah strukturnya. Seluruh proses ini dicatat dalam tabel django_migrations, memastikan konsistensi dan keamanan antara kode model dan struktur database.
-5.  Menurut Anda, dari semua framework yang ada, mengapa framework Django dijadikan permulaan pembelajaran pengembangan perangkat lunak?
-    Menurut saya framework Django merupakan salah satu framework yang beginner-friendly dimana kita juga udah menggunakan python di semester 1 dan beginner seperti mahasiswa bisa dengan mudah tanpa perlu external library.Selain itu, strukturnya yang jelas dengan pola MVT (Model-View-Template) membantu pemula memahami pemisahan tugas dalam kode, sementara dokumentasinya yang lengkap dan komunitasnya yang aktif mempermudah proses belajar
+4.  Mengapa kita membutuhkan csrf_token saat membuat form di Django? Apa yang dapat terjadi jika kita tidak menambahkan csrf_token pada form Django? Bagaimana hal tersebut      
+dapat dimanfaatkan oleh penyerang?
+    csrf_token pada Django berfungsi sebagai perlindungan terhadap serangan Cross-Site Request Forgery (CSRF) dengan memastikan setiap request form berasal dari pengguna yang sah, bukan dari situs luar yang mencoba memalsukan permintaan. Jika kita tidak menambahkan csrf_token, aplikasi akan menjadi rentan sehingga penyerang dapat memanfaatkan sesi login pengguna untuk mengirim request berbahaya, seperti mengganti password, melakukan transaksi, atau menghapus data, tanpa sepengetahuan dan persetujuan pengguna.
+
+5.  Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step (bukan hanya sekadar mengikuti tutorial).
+    cara saya mengimplementasikan checklist diatas berawal dari implementasi skeleton sebagai kerangka views lalu buat base.html lalu ubah code di main html dan membuat form input data dan tampilan data serta mengembalikan data dalam bentuk xml,xml by id,json dan json by id lalu kita buat semua fungsi itu mengikuti apa yang telah kita pelajari di tutorial , lalu kita gunakan postman
+
 6.  Apakah ada feedback untuk asisten dosen tutorial 1 yang telah kamu kerjakan sebelumnya?
     Tidak ada,Semua tutorial sudah lengkap + mudah di mengerti.
+
+
+![alt text](image-1.png)
+![alt text](image-2.png)
+![alt text](image-3.png)
+![alt text](image-4.png)
