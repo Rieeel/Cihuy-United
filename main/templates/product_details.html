@@ -29,4 +29,10 @@
         <p style="color:#444; font-size:1.05em; text-align:left;">{{ product.description }}</p>
     </div>
 </div>
+
+{% if news.user %}
+    <p>Author: {{ news.user.username }}</p>
+{% else %}
+    <p>Author: Anonymous</p>
+{% endif %}
 {% endblock content %}
