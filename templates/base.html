@@ -1,15 +1,30 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     {% block meta %} {% endblock meta %}
-</head>
-
-<body>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/global.css' %}"/>
+  </head>
+  <body>
     {% block content %} {% endblock content %}
-</body>
+      <script>
+    const navbar = document.getElementById('navbar');
+    let lastScroll = 0;
 
+    window.addEventListener('scroll', () => {
+      const currentScroll = window.scrollY;
+
+      if (currentScroll > lastScroll && currentScroll > 80) {
+        navbar.style.transform = 'translateY(-100%)'; // Scroll down → hide
+      } else {
+        navbar.style.transform = 'translateY(0)'; // Scroll up → show
+      }
+
+      lastScroll = currentScroll;
+    });
+    </script>
+  </body>
 </html>

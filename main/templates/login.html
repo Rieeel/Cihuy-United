@@ -1,32 +1,108 @@
 {% extends 'base.html' %}
 
 {% block meta %}
-<title>Login</title>
+<title>Login - Football News</title>
 {% endblock meta %}
 
 {% block content %}
-<div class="login">
-  <h1>Login</h1>
+<div style="background:#181f2a; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:32px;">
+  <div style="max-width:400px; width:100%;">
+    <div style="background:#232b3e; border-radius:12px; box-shadow:0 4px 18px rgba(0,0,0,0.18); padding:32px 28px;">
+      <div style="text-align:center; margin-bottom:28px;">
+        <h1 style="color:#90caf9; font-size:2em; font-weight:700; margin-bottom:8px;">Sign In</h1>
+        <p style="color:#b0bec5;">Welcome back to Football News</p>
+      </div>
 
-  <form method="POST" action="">
-    {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-      <tr>
-        <td></td>
-        <td><input class="btn login_btn" type="submit" value="Login" /></td>
-      </tr>
-    </table>
-  </form>
+      <!-- Form Errors Display -->
+      {% if form.non_field_errors %}
+        <div style="margin-bottom:20px;">
+          {% for error in form.non_field_errors %}
+            <div style="padding:12px; border-radius:6px; font-size:0.98em; border:1px solid #ffbdbd; background:#ffeaea; color:#d8000c;">
+              {{ error }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
 
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %} Don't have an account yet?
-  <a href="{% url 'main:register' %}">Register Now</a>
+      {% if form.errors %}
+        <div style="margin-bottom:20px;">
+          {% for field, errors in form.errors.items %}
+            {% if field != '__all__' %}
+              {% for error in errors %}
+                <div style="padding:12px; border-radius:6px; font-size:0.98em; border:1px solid #ffbdbd; background:#ffeaea; color:#d8000c; margin-bottom:8px;">
+                  <strong>{{ field|title }}:</strong> {{ error }}
+                </div>
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <form method="POST" action="" style="display:flex; flex-direction:column; gap:20px;">
+        {% csrf_token %}
+        
+        <div>
+          <label for="username" style="display:block; color:#b0bec5; font-size:1em; font-weight:500; margin-bottom:6px;">Username</label>
+          <input 
+            id="username" 
+            name="username" 
+            type="text" 
+            required 
+            style="width:100%; padding:12px; border:1px solid #374151; border-radius:6px; background:#1a2233; color:#fff; font-size:1em; outline:none;"
+            placeholder="Enter your username">
+        </div>
+
+        <div>
+          <label for="password" style="display:block; color:#b0bec5; font-size:1em; font-weight:500; margin-bottom:6px;">Password</label>
+          <input 
+            id="password" 
+            name="password" 
+            type="password" 
+            required 
+            style="width:100%; padding:12px; border:1px solid #374151; border-radius:6px; background:#1a2233; color:#fff; font-size:1em; outline:none;"
+            placeholder="Enter your password">
+        </div>
+
+        <button 
+          type="submit" 
+          style="width:100%; background:#1976d2; color:#fff; font-weight:600; padding:12px; border:none; border-radius:6px; font-size:1.1em; cursor:pointer; transition:background 0.2s;"
+          onmouseover="this.style.background='#1565c0';"
+          onmouseout="this.style.background='#1976d2';"
+        >
+          Sign In
+        </button>
+      </form>
+
+      <!-- Messages Display -->
+      {% if messages %}
+        <div style="margin-top:20px;">
+          {% for message in messages %}
+            <div 
+              style="
+                padding:12px; border-radius:6px; font-size:0.98em; margin-bottom:8px;
+                {% if message.tags == 'success' %}
+                  background:#e3fcec; border:1px solid #b7ebc6; color:#1b5e20;
+                {% elif message.tags == 'error' %}
+                  background:#ffeaea; border:1px solid #ffbdbd; color:#d8000c;
+                {% else %}
+                  background:#232b3e; border:1px solid #374151; color:#b0bec5;
+                {% endif %}
+              ">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      <div style="margin-top:28px; text-align:center; padding-top:18px; border-top:1px solid #374151;">
+        <p style="color:#b0bec5; font-size:0.98em;">
+          Don't have an account? 
+          <a href="{% url 'main:register' %}" style="color:#90caf9; text-decoration:underline; font-weight:500;">
+            Register Now
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
-
 {% endblock content %}

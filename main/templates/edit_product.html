@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="min-h-screen flex items-center justify-center bg-[#181f2a] px-4 py-10">
+  <div class="w-full max-w-lg bg-[#232b3e] border border-[#374151] rounded-2xl shadow-xl p-8">
+
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-[#90caf9]">✏️ Edit Product</h1>
+      <p class="text-gray-300 text-sm mt-2">Update your product details below</p>
+    </div>
+
+    <!-- Form -->
+    <!-- ✅ enctype penting untuk upload gambar -->
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Nama -->
+      <div class="bg-[#1a2233] border border-[#374151] rounded-lg p-4">
+        <label class="block text-gray-200 font-semibold mb-1">Product Name</label>
+        {{ form.name }}
+      </div>
+
+      <!-- Category -->
+      <div class="bg-[#1a2233] border border-[#374151] rounded-lg p-4">
+        <label class="block text-gray-200 font-semibold mb-1">Category</label>
+        {{ form.category }}
+      </div>
+
+      <!-- Price -->
+      <div class="bg-[#1a2233] border border-[#374151] rounded-lg p-4">
+        <label class="block text-gray-200 font-semibold mb-1">Price</label>
+        {{ form.price }}
+      </div>
+
+      <!-- Stock -->
+      <div class="bg-[#1a2233] border border-[#374151] rounded-lg p-4">
+        <label class="block text-gray-200 font-semibold mb-1">Stock</label>
+        {{ form.stock }}
+      </div>
+
+      <!-- Description -->
+      <div class="bg-[#1a2233] border border-[#374151] rounded-lg p-4">
+        <label class="block text-gray-200 font-semibold mb-1">Description</label>
+        {{ form.description }}
+      </div>
+
+      <!-- ✅ Thumbnail / Image -->
+        <div class="bg-[#1a2233] border border-[#374151] rounded-lg p-4">
+        <label class="block text-gray-200 font-semibold mb-1">
+            Thumbnail / Image URL
+        </label>
+
+        <!-- Input URL -->
+        {{ form.thumbnail }}
+
+        {% if object.thumbnail %}
+            <p class="text-gray-400 text-sm mt-2">Current:</p>
+            <img src="{{ object.thumbnail }}" alt="Current image"
+                class="mt-2 w-32 h-32 object-cover rounded-md border border-[#374151]">
+        {% endif %}
+        </div>
+
+      <!-- Tombol Submit -->
+      <button type="submit"
+              class="w-full bg-[#1976d2] hover:bg-[#1565c0] text-white font-semibold
+                     py-3 rounded-lg shadow-md transition duration-300">
+        💾 Save Changes
+      </button>
+    </form>
+
+    <!-- Back Link -->
+    <div class="text-center mt-6">
+      <a href="{% url 'main:show_main' %}"
+         class="text-[#90caf9] hover:text-[#64b5f6] underline transition">
+        ← Back to Home
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
