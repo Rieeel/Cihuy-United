@@ -147,3 +147,5 @@ def delete_product(request, id):
     return HttpResponseRedirect(reverse('main:show_main'))
 
 
+
+

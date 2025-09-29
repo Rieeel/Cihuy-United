@@ -91,13 +91,27 @@
             </h3>
           </a>
 
-          <p class="mb-3 text-sm">
+          <p class="mb-3 text-sm flex items-center flex-wrap gap-2 text-[#b0bec5]">
             <span class="bg-[#374151] text-[#90caf9] px-2 py-0.5 rounded-md">{{ product.category }}</span>
             {% if product.is_featured %}
-            <span class="bg-[#ffe082] text-[#d17b00] px-2 py-0.5 rounded-md ml-2">★ Featured</span>
+              <span class="bg-[#ffe082] text-[#d17b00] px-2 py-0.5 rounded-md">★ Featured</span>
             {% endif %}
-            | <i>{{ product.created_at|date:"d M Y H:i" }}</i>
-            | Views: {{ product.views }}
+
+            <span class="text-xs text-[#90caf9] italic">
+              {{ product.created_at|date:"d M Y H:i" }}
+            </span>
+
+            <!-- Views badge -->
+            <span class="bg-[#1a2233] border border-[#374151] text-[#b0bec5] px-2 py-0.5 rounded-md flex items-center gap-1">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#90caf9]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 
+                  7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+              </svg>
+              {{ product.views }}
+            </span>
           </p>
 
           {% if product.thumbnail %}

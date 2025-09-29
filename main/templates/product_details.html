@@ -1,68 +1,89 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="min-h-screen flex items-center justify-center bg-[#181f2a] px-4 py-10">
-  <div class="w-full max-w-3xl bg-[#232b3e] border border-[#374151] rounded-2xl shadow-xl p-8">
+<div class="min-h-screen flex items-center justify-center bg-[#181f2a] px-4 py-12">
+  <div class="w-full max-w-4xl bg-[#232b3e] border border-[#374151] rounded-2xl shadow-2xl overflow-hidden">
 
-    <!-- Tombol Back -->
-    <div class="mb-6">
-      <a href="{% url 'main:show_main' %}" 
-         class="inline-block bg-[#1976d2] hover:bg-[#1565c0] text-white px-5 py-2 rounded-full font-semibold transition duration-300 shadow-md">
-        ← Back to Home
+    <!-- Header -->
+    <div class="p-6 flex items-center justify-between border-b border-[#2f374a]">
+      <!-- Tombol Back -->
+      <a href="{% url 'main:show_main' %}"
+         class="flex items-center gap-2 bg-[#1976d2] hover:bg-[#1565c0] text-white px-5 py-2 rounded-full font-semibold transition duration-300 shadow-md">
+        ← Home
       </a>
+
+      <!-- Views -->
+      <span class="bg-[#1a2233] border border-[#374151] text-[#b0bec5] px-3 py-1 rounded-full flex items-center gap-1 text-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#90caf9]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 
+            7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+        </svg>
+        {{ product.views }}
+      </span>
     </div>
 
     <!-- Thumbnail -->
-    {% if product.thumbnail %}
-      <img src="{{ product.thumbnail }}" alt="{{ product.name }} thumbnail"
-           class="w-full max-h-[420px] object-cover rounded-xl border border-[#374151] shadow-md mb-6">
-    {% else %}
-      <div class="w-full h-[320px] flex items-center justify-center bg-[#1a2233] rounded-xl text-gray-400 border border-[#374151] mb-6">
-        No Image
-      </div>
-    {% endif %}
-
-    <!-- Judul & Harga -->
-    <div class="text-center mb-6">
-      <h1 class="text-3xl font-bold text-[#90caf9]">{{ product.name }}</h1>
-      <p class="text-2xl font-semibold text-[#ffb74d] mt-2">Rp {{ product.price|floatformat:0 }}</p>
-      <p class="text-gray-400 mt-1">Stock: <span class="font-semibold text-gray-200">{{ product.stock }}</span></p>
-    </div>
-
-    <!-- Badges -->
-    <div class="flex items-center justify-center gap-3 mb-8">
-      <span class="px-4 py-1.5 rounded-full bg-[#1a2233] border border-[#374151] text-[#90caf9] font-medium">
-        {{ product.category }}
-      </span>
-      {% if product.is_featured %}
-        <span class="px-4 py-1.5 rounded-full bg-[#3b2f1a] border border-[#705a2e] text-[#ffb74d] font-medium">
-          ★ Featured
-        </span>
-      {% endif %}
-    </div>
-
-    <!-- Divider -->
-    <hr class="border-t border-[#374151] mb-6">
-
-    <!-- Deskripsi -->
-    <div class="text-gray-300 leading-relaxed text-justify">
-      {{ product.description }}
-    </div>
-
-    <!-- Footer Author -->
-    <div class="mt-8 text-right text-sm text-gray-400">
-      <b class="text-gray-300">Author:</b>
-      {% if product.user %}
-        <span class="text-[#90caf9] font-medium">
-          <i class="fa fa-user"></i> {{ product.user.username }}
-        </span>
+    <div class="relative group">
+      {% if product.thumbnail %}
+        <img src="{{ product.thumbnail }}" alt="{{ product.name }} thumbnail"
+             class="w-full max-h-[480px] object-cover transition duration-500 group-hover:scale-[1.02]">
       {% else %}
-        <span class="italic text-gray-500">
-          <i class="fa fa-user-secret"></i> Anonymous
-        </span>
+        <div class="w-full h-[360px] flex items-center justify-center bg-[#1a2233] text-gray-400">
+          No Image
+        </div>
       {% endif %}
+      <!-- Gradient overlay -->
+      <div class="absolute inset-0 bg-gradient-to-t from-[#181f2a]/70 via-transparent to-transparent pointer-events-none"></div>
     </div>
 
+    <!-- Body -->
+    <div class="p-8">
+      <!-- Judul & Harga -->
+      <div class="text-center mb-6">
+        <h1 class="text-4xl font-extrabold text-[#90caf9] tracking-tight">{{ product.name }}</h1>
+        <p class="text-2xl font-bold text-[#ffb74d] mt-2">Rp {{ product.price|floatformat:0 }}</p>
+        <p class="text-gray-400 mt-1">
+          Stock: <span class="font-semibold text-gray-200">{{ product.stock }}</span>
+        </p>
+      </div>
+
+      <!-- Badges -->
+      <div class="flex items-center justify-center gap-3 mb-8">
+        <span class="px-4 py-1.5 rounded-full bg-[#1a2233] border border-[#374151] text-[#90caf9] font-medium shadow-sm">
+          {{ product.category }}
+        </span>
+        {% if product.is_featured %}
+          <span class="px-4 py-1.5 rounded-full bg-[#3b2f1a] border border-[#705a2e] text-[#ffb74d] font-medium shadow-sm animate-pulse">
+            ★ Featured
+          </span>
+        {% endif %}
+      </div>
+
+      <!-- Divider -->
+      <div class="h-px w-full bg-gradient-to-r from-transparent via-[#374151] to-transparent mb-8"></div>
+
+      <!-- Deskripsi -->
+      <div class="prose prose-invert max-w-none text-gray-300 leading-relaxed text-justify">
+        {{ product.description }}
+      </div>
+
+      <!-- Footer Author -->
+      <div class="mt-10 flex justify-end text-sm text-gray-400">
+        <b class="text-gray-300">Author:</b>
+        {% if product.user %}
+          <span class="ml-2 text-[#90caf9] font-medium flex items-center gap-1">
+            <i class="fa fa-user"></i> {{ product.user.username }}
+          </span>
+        {% else %}
+          <span class="ml-2 italic text-gray-500 flex items-center gap-1">
+            <i class="fa fa-user-secret"></i> Anonymous
+          </span>
+        {% endif %}
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}
