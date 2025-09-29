@@ -1,79 +1,68 @@
 {% extends 'base.html' %}
+{% load static %}
+
 {% block content %}
-<div style="display:flex; justify-content:center; align-items:center; min-height:100vh; background:#f0f2f5;">
-    <div style="width:100%; max-width:480px; background:#ffffff; padding:40px 32px; border-radius:12px; 
-                box-shadow:0 6px 20px rgba(0,0,0,0.08);">
-        <h1 style="text-align:center; color:#1a4a8d; margin-bottom:28px;">Add Product</h1>
+<div class="min-h-screen flex items-center justify-center bg-[#181f2a] px-4 py-10">
+  <div class="w-full max-w-lg bg-[#232b3e] border border-[#374151] rounded-2xl shadow-xl p-8">
 
-        <form method="POST" style="display:flex; flex-direction:column; gap:18px;">
-            {% csrf_token %}
-            {% for field in form %}
-                <div style="display:flex; flex-direction:column;">
-                    <label for="{{ field.id_for_label }}" style="font-weight:600; color:#333; margin-bottom:6px;">
-                        {{ field.label }}
-                    </label>
-                    {{ field }}
-                    {% if field.errors %}
-                        <ul style="color:#d8000c; margin:4px 0 0 0; padding-left:18px; font-size:0.9em;">
-                            {% for err in field.errors %}
-                                <li>{{ err }}</li>
-                            {% endfor %}
-                        </ul>
-                    {% endif %}
-                </div>
-            {% endfor %}
-            <button type="submit" 
-                    style="background:#1a4a8d; color:#fff; border:none; padding:12px; border-radius:6px;
-                           font-weight:600; cursor:pointer; transition:background 0.2s;">
-                Add Product
-            </button>
-        </form>
-
-        {% if error %}
-        <div style="background:#ffeaea; color:#d8000c; border-radius:6px; padding:14px; margin-top:20px;">
-            <h3 style="margin-top:0;">Oops! Ada error:</h3>
-            <ul style="padding-left:18px; margin-bottom:0;">
-                {% for field, errors in error.items %}
-                    {% for err in errors %}
-                        <li>{{ err }}</li>
-                    {% endfor %}
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-
-        <div style="text-align:center; margin-top:22px;">
-            <a href="{% url 'main:show_main' %}" 
-               style="color:#1a4a8d; text-decoration:none; font-weight:600;">← Back to Home</a>
-        </div>
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-[#90caf9]">➕ Add Product</h1>
+      <p class="text-gray-300 text-sm mt-2">Fill in the product details below</p>
     </div>
-</div>
 
-<style>
-/* box input modern */
-form input[type="text"],
-form input[type="number"],
-form textarea,
-form select {
-    width: 100%;
-    padding: 12px 14px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
-    background: #f9fafb;
-    font-size: 1rem;
-    transition: all 0.2s;
-}
-form input[type="text"]:focus,
-form input[type="number"]:focus,
-form textarea:focus,
-form select:focus {
-    border-color: #1a4a8d;
-    background: #ffffff;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(26,74,141,0.15);
-}
-button:hover {
-    background:#163a6b;
-}
-</style>
+    <!-- Form -->
+    <form method="POST" enctype="multipart/form-data" class="space-y-6">
+      {% csrf_token %}
+
+      <!-- Loop semua field -->
+      {% for field in form %}
+      <div class="bg-[#1a2233] border border-[#374151] rounded-lg p-4">
+        <label for="{{ field.id_for_label }}" class="block text-gray-200 font-semibold mb-1">
+          {{ field.label }}
+        </label>
+        {{ field }}
+
+        {% if field.errors %}
+        <ul class="text-red-400 text-sm mt-2 list-disc list-inside">
+          {% for err in field.errors %}
+            <li>{{ err }}</li>
+          {% endfor %}
+        </ul>
+        {% endif %}
+      </div>
+      {% endfor %}
+
+      <!-- Tombol Submit -->
+      <button type="submit"
+              class="w-full bg-[#1976d2] hover:bg-[#1565c0] text-white font-semibold
+                     py-3 rounded-lg shadow-md transition duration-300">
+        ➕ Add Product
+      </button>
+    </form>
+
+    <!-- Error global -->
+    {% if error %}
+    <div class="bg-[#3b1d1d] border border-red-600 text-red-400 rounded-lg p-4 mt-6">
+      <h3 class="font-semibold mb-2">⚠️ Oops! Ada error:</h3>
+      <ul class="list-disc list-inside">
+        {% for field, errors in error.items %}
+          {% for err in errors %}
+            <li>{{ err }}</li>
+          {% endfor %}
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    <!-- Back Link -->
+    <div class="text-center mt-6">
+      <a href="{% url 'main:show_main' %}"
+         class="text-[#90caf9] hover:text-[#64b5f6] underline transition">
+        ← Back to Home
+      </a>
+    </div>
+
+  </div>
+</div>
 {% endblock %}

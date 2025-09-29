@@ -1,209 +1,68 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<style>
-    :root {
-        --primary-color: #1a4a8d;
-        --secondary-color: #d17b00;
-        --bg-gradient: linear-gradient(135deg, #f0f4fa 0%, #f9fbfd 100%);
-        --card-bg: #ffffff;
-        --text-dark: #2c3e50;
-        --text-muted: #7f8c8d;
-    }
+<div class="min-h-screen flex items-center justify-center bg-[#181f2a] px-4 py-10">
+  <div class="w-full max-w-3xl bg-[#232b3e] border border-[#374151] rounded-2xl shadow-xl p-8">
 
-    body {
-        background: var(--bg-gradient);
-        margin: 0;
-        padding: 0;
-        font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    }
-
-    /* Kontainer Fullscreen */
-    .product-page {
-        min-height: 100vh;           /* fullscreen vertical */
-        width: 100%;                 /* fullscreen horizontal */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: flex-start;  /* mulai dari atas */
-        padding: 40px 20px;
-    }
-
-    /* Card besar supaya konten nyaman dibaca */
-    .product-card {
-        width: 100%;
-        max-width: 900px;            /* biar teks gak terlalu lebar */
-        background: var(--card-bg);
-        border-radius: 16px;
-        padding: 40px 36px;
-        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-        border-top: 6px solid var(--primary-color);
-        animation: fadeIn 0.6s ease;
-    }
-
-    /* Tombol Back */
-    .btn-back {
-        background: var(--primary-color);
-        color: #fff;
-        padding: 10px 24px;
-        border-radius: 30px;
-        border: none;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-block;
-        margin-bottom: 32px;
-        transition: all 0.25s ease;
-    }
-    .btn-back:hover {
-        background: #14376b;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        transform: translateY(-1px);
-    }
-
-    /* Thumbnail */
-    .product-thumbnail {
-        width: 100%;
-        max-height: 400px;
-        object-fit: cover;
-        border-radius: 12px;
-        margin-bottom: 24px;
-        box-shadow: 0 6px 14px rgba(0,0,0,0.1);
-        border: 2px solid #e6ecf5;
-    }
-    .thumbnail-placeholder {
-        width: 100%;
-        height: 320px;
-        background: #eef3fb;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-muted);
-        font-size: 1.2em;
-        margin-bottom: 24px;
-    }
-
-    /* Judul & Harga */
-    .product-title {
-        color: var(--primary-color);
-        font-weight: 700;
-        font-size: 2.2em;
-        margin-bottom: 8px;
-        text-align: center;
-    }
-    .product-price {
-        font-size: 1.6em;
-        font-weight: 600;
-        color: var(--secondary-color);
-        display: block;
-        text-align: center;
-        margin-top: 4px;
-    }
-    .product-stock {
-        color: var(--text-muted);
-        font-weight: 500;
-        text-align: center;
-        display: block;
-        margin-top: 4px;
-    }
-
-    /* Badge */
-    .product-badges {
-        margin-top: 20px;
-        text-align: center;
-    }
-    .badge {
-        display: inline-block;
-        padding: 6px 16px;
-        border-radius: 20px;
-        font-size: 0.95em;
-        margin: 0 6px;
-        font-weight: 500;
-    }
-    .badge-category {
-        background: #e3f2fd;
-        color: var(--primary-color);
-    }
-    .badge-featured {
-        background: #ffe082;
-        color: var(--secondary-color);
-    }
-
-    /* Divider */
-    hr.divider {
-        border: none;
-        border-top: 2px dashed #d0d4db;
-        margin: 28px 0;
-    }
-
-    /* Deskripsi */
-    .product-description {
-        color: var(--text-dark);
-        font-size: 1.1em;
-        line-height: 1.8;
-        text-align: justify;
-    }
-
-    /* Footer Author */
-    .product-footer {
-        margin-top: 32px;
-        font-size: 1em;
-        color: var(--text-muted);
-        text-align: right;
-    }
-    .author-name {
-        color: var(--primary-color);
-        font-weight: 600;
-    }
-    .author-anonymous {
-        color: #b0bec5;
-        font-style: italic;
-    }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to   { opacity: 1; transform: translateY(0); }
-    }
-</style>
-
-<div class="product-page">
-    <div class="product-card">
-        <a href="{% url 'main:show_main' %}" class="btn-back">← Back to Home</a>
-
-        {% if product.thumbnail %}
-            <img src="{{ product.thumbnail }}" alt="{{ product.name }} thumbnail" class="product-thumbnail">
-        {% else %}
-            <div class="thumbnail-placeholder">No Image</div>
-        {% endif %}
-
-        <h1 class="product-title">{{ product.name }}</h1>
-        <span class="product-price">Rp {{ product.price|floatformat:0 }}</span>
-        <span class="product-stock">Stock: <b>{{ product.stock }}</b></span>
-
-        <div class="product-badges">
-            <span class="badge badge-category">{{ product.category }}</span>
-            {% if product.is_featured %}
-                <span class="badge badge-featured">★ Featured</span>
-            {% endif %}
-        </div>
-
-        <hr class="divider">
-
-        <p class="product-description">{{ product.description }}</p>
-
-        <div class="product-footer">
-            <b>Author:</b>
-            {% if product.user %}
-                <span class="author-name">
-                    <i class="fa fa-user"></i> {{ product.user.username }}
-                </span>
-            {% else %}
-                <span class="author-anonymous">
-                    <i class="fa fa-user-secret"></i> Anonymous
-                </span>
-            {% endif %}
-        </div>
+    <!-- Tombol Back -->
+    <div class="mb-6">
+      <a href="{% url 'main:show_main' %}" 
+         class="inline-block bg-[#1976d2] hover:bg-[#1565c0] text-white px-5 py-2 rounded-full font-semibold transition duration-300 shadow-md">
+        ← Back to Home
+      </a>
     </div>
+
+    <!-- Thumbnail -->
+    {% if product.thumbnail %}
+      <img src="{{ product.thumbnail }}" alt="{{ product.name }} thumbnail"
+           class="w-full max-h-[420px] object-cover rounded-xl border border-[#374151] shadow-md mb-6">
+    {% else %}
+      <div class="w-full h-[320px] flex items-center justify-center bg-[#1a2233] rounded-xl text-gray-400 border border-[#374151] mb-6">
+        No Image
+      </div>
+    {% endif %}
+
+    <!-- Judul & Harga -->
+    <div class="text-center mb-6">
+      <h1 class="text-3xl font-bold text-[#90caf9]">{{ product.name }}</h1>
+      <p class="text-2xl font-semibold text-[#ffb74d] mt-2">Rp {{ product.price|floatformat:0 }}</p>
+      <p class="text-gray-400 mt-1">Stock: <span class="font-semibold text-gray-200">{{ product.stock }}</span></p>
+    </div>
+
+    <!-- Badges -->
+    <div class="flex items-center justify-center gap-3 mb-8">
+      <span class="px-4 py-1.5 rounded-full bg-[#1a2233] border border-[#374151] text-[#90caf9] font-medium">
+        {{ product.category }}
+      </span>
+      {% if product.is_featured %}
+        <span class="px-4 py-1.5 rounded-full bg-[#3b2f1a] border border-[#705a2e] text-[#ffb74d] font-medium">
+          ★ Featured
+        </span>
+      {% endif %}
+    </div>
+
+    <!-- Divider -->
+    <hr class="border-t border-[#374151] mb-6">
+
+    <!-- Deskripsi -->
+    <div class="text-gray-300 leading-relaxed text-justify">
+      {{ product.description }}
+    </div>
+
+    <!-- Footer Author -->
+    <div class="mt-8 text-right text-sm text-gray-400">
+      <b class="text-gray-300">Author:</b>
+      {% if product.user %}
+        <span class="text-[#90caf9] font-medium">
+          <i class="fa fa-user"></i> {{ product.user.username }}
+        </span>
+      {% else %}
+        <span class="italic text-gray-500">
+          <i class="fa fa-user-secret"></i> Anonymous
+        </span>
+      {% endif %}
+    </div>
+
+  </div>
 </div>
-{% endblock content %}
- 
+{% endblock %}
