@@ -15,7 +15,7 @@
     <form method="POST" enctype="multipart/form-data" class="space-y-6">
       {% csrf_token %}
 
-      <!-- Loop semua field -->
+      <!-- Loop semua field kecuali kategori -->
       {% for field in form %}
       <div class="bg-[#1a2233] border border-[#374151] rounded-lg p-4">
         <label for="{{ field.id_for_label }}" class="block text-gray-200 font-semibold mb-1">
@@ -32,7 +32,6 @@
         {% endif %}
       </div>
       {% endfor %}
-
       <!-- Tombol Submit -->
       <button type="submit"
               class="w-full bg-[#1976d2] hover:bg-[#1565c0] text-white font-semibold

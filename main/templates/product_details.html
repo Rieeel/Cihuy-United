@@ -2,88 +2,148 @@
 
 {% block content %}
 <div class="min-h-screen flex items-center justify-center bg-[#181f2a] px-4 py-12">
-  <div class="w-full max-w-4xl bg-[#232b3e] border border-[#374151] rounded-2xl shadow-2xl overflow-hidden">
+    <div id="loading-state" class="text-white text-lg">Loading Product...</div>
+    <div id="error-state" class="text-red-400 text-lg hidden">Failed to load product details. Please try again.</div>
 
-    <!-- Header -->
-    <div class="p-6 flex items-center justify-between border-b border-[#2f374a]">
-      <!-- Tombol Back -->
-      <a href="{% url 'main:show_main' %}"
-         class="flex items-center gap-2 bg-[#1976d2] hover:bg-[#1565c0] text-white px-5 py-2 rounded-full font-semibold transition duration-300 shadow-md">
-        ← Home
-      </a>
+    <div id="product-container" class="w-full max-w-4xl bg-[#232b3e] border border-[#374151] rounded-2xl shadow-2xl overflow-hidden hidden">
 
-      <!-- Views -->
-      <span class="bg-[#1a2233] border border-[#374151] text-[#b0bec5] px-3 py-1 rounded-full flex items-center gap-1 text-sm">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#90caf9]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 
-            7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-        </svg>
-        {{ product.views }}
-      </span>
-    </div>
-
-    <!-- Thumbnail -->
-    <div class="relative group">
-      {% if product.thumbnail %}
-        <img src="{{ product.thumbnail }}" alt="{{ product.name }} thumbnail"
-             class="w-full max-h-[480px] object-cover transition duration-500 group-hover:scale-[1.02]">
-      {% else %}
-        <div class="w-full h-[360px] flex items-center justify-center bg-[#1a2233] text-gray-400">
-          No Image
+        <div class="p-6 flex items-center justify-between border-b border-[#2f374a]">
+            <a href="{% url 'main:show_main' %}"
+               class="flex items-center gap-2 bg-[#1976d2] hover:bg-[#1565c0] text-white px-5 py-2 rounded-full font-semibold transition duration-300 shadow-md">
+                ← Home
+            </a>
+            <span class="bg-[#1a2233] border border-[#374151] text-[#b0bec5] px-3 py-1 rounded-full flex items-center gap-1 text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#90caf9]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+                <span id="product-views">0</span>
+            </span>
         </div>
-      {% endif %}
-      <!-- Gradient overlay -->
-      <div class="absolute inset-0 bg-gradient-to-t from-[#181f2a]/70 via-transparent to-transparent pointer-events-none"></div>
+
+        <div class="relative group">
+            <img id="product-image" src="" alt="Product Image" class="w-full max-h-[480px] object-cover transition duration-500 group-hover:scale-[1.02] hidden">
+            <div id="no-image" class="w-full h-[360px] flex items-center justify-center bg-[#1a2233] text-gray-400">
+                No Image
+            </div>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#181f2a]/70 via-transparent to-transparent pointer-events-none"></div>
+        </div>
+
+        <div class="p-8">
+            <div class="text-center mb-6">
+                <h1 id="product-name" class="text-4xl font-extrabold text-[#90caf9] tracking-tight"></h1>
+                <p id="product-price" class="text-2xl font-bold text-[#ffb74d] mt-2"></p>
+                <p class="text-gray-400 mt-1">
+                    Stock: <span id="product-stock" class="font-semibold text-gray-200"></span>
+                </p>
+            </div>
+
+            <div id="badges-container" class="flex items-center justify-center gap-3 mb-8"></div>
+
+            <div class="h-px w-full bg-gradient-to-r from-transparent via-[#374151] to-transparent mb-8"></div>
+
+            <div id="product-description" class="prose prose-invert max-w-none text-gray-300 leading-relaxed text-justify"></div>
+
+            <div class="mt-10 flex justify-end text-sm text-gray-400">
+                <b class="text-gray-300">Author:</b>
+                <span id="product-author" class="ml-2 italic text-gray-500"></span>
+            </div>
+        </div>
     </div>
-
-    <!-- Body -->
-    <div class="p-8">
-      <!-- Judul & Harga -->
-      <div class="text-center mb-6">
-        <h1 class="text-4xl font-extrabold text-[#90caf9] tracking-tight">{{ product.name }}</h1>
-        <p class="text-2xl font-bold text-[#ffb74d] mt-2">Rp {{ product.price|floatformat:0 }}</p>
-        <p class="text-gray-400 mt-1">
-          Stock: <span class="font-semibold text-gray-200">{{ product.stock }}</span>
-        </p>
-      </div>
-
-      <!-- Badges -->
-      <div class="flex items-center justify-center gap-3 mb-8">
-        <span class="px-4 py-1.5 rounded-full bg-[#1a2233] border border-[#374151] text-[#90caf9] font-medium shadow-sm">
-          {{ product.category }}
-        </span>
-        {% if product.is_featured %}
-          <span class="px-4 py-1.5 rounded-full bg-[#3b2f1a] border border-[#705a2e] text-[#ffb74d] font-medium shadow-sm animate-pulse">
-            ★ Featured
-          </span>
-        {% endif %}
-      </div>
-
-      <!-- Divider -->
-      <div class="h-px w-full bg-gradient-to-r from-transparent via-[#374151] to-transparent mb-8"></div>
-
-      <!-- Deskripsi -->
-      <div class="prose prose-invert max-w-none text-gray-300 leading-relaxed text-justify">
-        {{ product.description }}
-      </div>
-
-      <!-- Footer Author -->
-      <div class="mt-10 flex justify-end text-sm text-gray-400">
-        <b class="text-gray-300">Author:</b>
-        {% if product.user %}
-          <span class="ml-2 text-[#90caf9] font-medium flex items-center gap-1">
-            <i class="fa fa-user"></i> {{ product.user.username }}
-          </span>
-        {% else %}
-          <span class="ml-2 italic text-gray-500 flex items-center gap-1">
-            <i class="fa fa-user-secret"></i> Anonymous
-          </span>
-        {% endif %}
-      </div>
-    </div>
-  </div>
 </div>
+
+<script>
+const PRODUCT_ID = "{{ product_id }}";
+const PRODUCT_DETAIL_ENDPOINT = `{% url 'main:show_json_by_id' '00000000-0000-0000-0000-000000000000' %}`.replace('00000000-0000-0000-0000-000000000000', PRODUCT_ID);
+
+// --- DOM Elements ---
+const loadingState = document.getElementById('loading-state');
+const errorState = document.getElementById('error-state');
+const productContainer = document.getElementById('product-container');
+const productName = document.getElementById('product-name');
+const productPrice = document.getElementById('product-price');
+const productStock = document.getElementById('product-stock');
+const productDescription = document.getElementById('product-description');
+const productAuthor = document.getElementById('product-author');
+const productImage = document.getElementById('product-image');
+const noImage = document.getElementById('no-image');
+const productViews = document.getElementById('product-views');
+const badgesContainer = document.getElementById('badges-container');
+
+// --- Functions ---
+
+// Mengatur tampilan state (loading, error, atau success)
+function showState(state) {
+    loadingState.classList.toggle('hidden', state !== 'loading');
+    errorState.classList.toggle('hidden', state !== 'error');
+    productContainer.classList.toggle('hidden', state !== 'success');
+}
+
+// Merender data produk ke dalam elemen HTML
+function renderProduct(product) {
+    // Mengisi data utama
+    productName.textContent = product.name || "Product Name Not Available";
+    document.title = `${product.name || "Product"} - Detail`;
+    productPrice.textContent = `Rp ${Number(product.price || 0).toLocaleString('id-ID')}`;
+    productStock.textContent = product.stock > 0 ? `${product.stock} pcs` : "Out of Stock";
+    productDescription.textContent = product.description || "No description available.";
+    productAuthor.textContent = product.user_username || "Anonymous"; // Pastikan key JSON-nya 'user_username'
+    productViews.textContent = product.views || 0;
+
+    // Menampilkan gambar
+    if (product.thumbnail) { // Pastikan key JSON-nya 'thumbnail'
+        productImage.src = product.thumbnail;
+        productImage.classList.remove('hidden');
+        noImage.classList.add('hidden');
+    } else {
+        productImage.classList.add('hidden');
+        noImage.classList.remove('hidden');
+    }
+    
+    // Membuat badges
+    badgesContainer.innerHTML = ''; // Bersihkan badges lama
+    
+    // Badge Kategori
+    if (product.category) {
+        const categoryBadge = document.createElement('span');
+        categoryBadge.className = "px-4 py-1.5 rounded-full bg-[#1a2233] border border-[#374151] text-[#90caf9] font-medium shadow-sm";
+        categoryBadge.textContent = product.category;
+        badgesContainer.appendChild(categoryBadge);
+    }
+
+    // Badge Featured
+    if (product.is_featured) {
+        const featuredBadge = document.createElement('span');
+        featuredBadge.className = "px-4 py-1.5 rounded-full bg-[#3b2f1a] border border-[#705a2e] text-[#ffb74d] font-medium shadow-sm animate-pulse";
+        featuredBadge.textContent = "★ Featured";
+        badgesContainer.appendChild(featuredBadge);
+    }
+}
+
+// Mengambil data produk dari API
+async function loadProductDetail() {
+    showState('loading');
+    try {
+        const response = await fetch(PRODUCT_DETAIL_ENDPOINT, {
+            headers: { 'Accept': 'application/json' },
+        });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const productData = await response.json();
+        renderProduct(productData);
+        showState('success');
+
+    } catch (error) {
+        console.error('Error loading product detail:', error);
+        showState('error');
+    }
+}
+
+// --- Initialize ---
+loadProductDetail();
+</script>
+
 {% endblock %}

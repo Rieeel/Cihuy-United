@@ -2,15 +2,18 @@ from django.http import HttpResponse
 from django.shortcuts import *
 from django.core import serializers
 from urllib3 import request
-from main.models import Product
+from main.models import Category, Product
 from main.forms import ProductForm
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 import datetime
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+from django.utils.html import strip_tags
 
 @login_required(login_url='/main/login/')
 def show_main(request):
@@ -32,34 +35,50 @@ def show_main(request):
     return render(request, "main.html", context)
 
 def create_product(request):
-        form = ProductForm(request.POST or None)
+    form = ProductForm(request.POST or None)
+    categories = Category.objects.all()  # ✅ ambil semua kategori
 
-        if request.method == 'POST':
-            if form.is_valid():
-                new_product = form.save(commit=False)
-                new_product.user = request.user
-                new_product.save()
-                return redirect('main:show_main')
-            else:
-                new_form = ProductForm()
-                context = {
-                'form': new_form,
+    if request.method == 'POST':
+        if form.is_valid():
+            new_product = form.save(commit=False)
+            new_product.user = request.user
+
+            # ✅ Ambil kategori dari dropdown
+            cat_id = request.POST.get('category')
+            if cat_id:
+                try:
+                    category = Category.objects.get(id=cat_id)
+                    new_product.category = category
+                except Category.DoesNotExist:
+                    return render(request, 'create_product.html', {
+                        'form': form,
+                        'categories': categories,
+                        'error': {'category': ['Invalid category selected.']}
+                    })
+
+            new_product.save()
+            return redirect('main:show_main')
+        else:
+            # Jika form tidak valid, kirim ulang error ke template
+            return render(request, 'create_product.html', {
+                'form': form,
+                'categories': categories,
                 'error': form.errors
-            }
-            return render(request, 'create_product.html', context)
-        elif request.method == 'GET':
-            context = {
-                'form': form
-            }
-            return render(request, 'create_product.html', context)
-    
-        return HttpResponse(status = 404 )
+            })
+
+    # GET request → tampilkan form kosong
+    return render(request, 'create_product.html', {
+        'form': form,
+        'categories': categories
+    })
+
     
 @login_required(login_url='/main/login/')
 def show_product(request, id):
     product = get_object_or_404(Product, pk=id)
 
     context = {
+        'product_id': product.id,
         'product': product
     }
 
@@ -74,8 +93,22 @@ def show_xml(request):
 
 def show_json(request):
     product_list = Product.objects.all()
-    json_data = serializers.serialize("json", product_list)
-    return HttpResponse(json_data, content_type="application/json")
+    data = [
+        {
+            'id': str(product.id),
+            'name': product.name,
+            'description': product.description,
+            'category': product.category,
+            'thumbnail': product.thumbnail,
+            'price': product.price,
+            'stock': product.stock,
+            'created_at': product.created_at.isoformat() if product.created_at else None,
+            'is_featured': product.is_featured,
+            'user_id': product.user_id,
+        }
+        for product in product_list
+    ]
+    return JsonResponse(data, safe=False)
 
 
 def show_xml_by_id(request, product_id):
@@ -89,11 +122,22 @@ def show_xml_by_id(request, product_id):
 
 def show_json_by_id(request, product_id):
     try:
-        product_item = Product.objects.get(pk=product_id)
-        json_data = serializers.serialize("json", [product_item])
-        return HttpResponse(json_data, content_type="application/json")
+        product = Product.objects.get(pk=product_id)
+        data = {
+            'id': str(product.id),
+            'name': product.name,
+            'description': product.description,
+            'price': product.price, 
+            'stock': product.stock, 
+            'views': product.views,
+            'category': product.category.name if product.category else "Uncategorized",
+            'thumbnail': product.thumbnail if product.thumbnail else None,
+            'is_featured': product.is_featured,
+            'user': product.user.username if product.user else None,
+        }
+        return JsonResponse(data)
     except Product.DoesNotExist:
-        return HttpResponse(status=404)
+        return JsonResponse({'detail': 'Not found'}, status=404)
 
 def register(request):
     form = UserCreationForm()
@@ -145,6 +189,28 @@ def delete_product(request, id):
     product = get_object_or_404(Product, pk=id)
     product.delete()
     return HttpResponseRedirect(reverse('main:show_main'))
+
+@csrf_exempt
+@require_POST
+def add_product_entry_ajax(request):
+    name = strip_tags(request.POST.get("name")) # strip HTML tags!
+    description = strip_tags(request.POST.get("description")) # strip HTML tags!
+    category = strip_tags(request.POST.get("category")) # strip HTML tags!
+    thumbnail = strip_tags(request.POST.get("thumbnail")) # strip HTML tags!
+    is_featured = request.POST.get("is_featured") == 'on'
+    user = request.user
+
+    new_product = Product(
+        name=name,
+        description=description,
+        category=category,
+        thumbnail=thumbnail,
+        is_featured=is_featured,
+        user=user
+    )
+    new_product.save()
+
+    return HttpResponse(b"CREATED", status=201)
 
 
 
