@@ -18,5 +18,4 @@ urlpatterns = [
     path('products/<uuid:id>/edit', edit_product, name='edit_product'),
     path('products/<uuid:id>/delete', delete_product, name='delete_product'),
     path('create-product-ajax', add_product_entry_ajax, name='add_product_entry_ajax'),
-    path('api/product/<uuid:product_id>/', show_json_by_id, name='show_json_by_id'),
 ]

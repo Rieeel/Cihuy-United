@@ -102,7 +102,6 @@ def show_json(request):
             'thumbnail': product.thumbnail,
             'price': product.price,
             'stock': product.stock,
-            'created_at': product.created_at.isoformat() if product.created_at else None,
             'is_featured': product.is_featured,
             'user_id': product.user_id,
         }
