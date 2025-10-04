@@ -129,7 +129,7 @@ def show_json_by_id(request, product_id):
             'price': product.price, 
             'stock': product.stock, 
             'views': product.views,
-            'category': product.category.name if product.category else "Uncategorized",
+            'category': product.category,
             'thumbnail': product.thumbnail if product.thumbnail else None,
             'is_featured': product.is_featured,
             'user': product.user.username if product.user else None,
