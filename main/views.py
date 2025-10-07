@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import *
 from django.core import serializers
 from urllib3 import request
-from main.models import Category, Product
+from main.models import Product
 from main.forms import ProductForm
 from django.contrib import messages
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
@@ -36,41 +36,16 @@ def show_main(request):
 
 def create_product(request):
     form = ProductForm(request.POST or None)
-    categories = Category.objects.all()  # ✅ ambil semua kategori
 
     if request.method == 'POST':
         if form.is_valid():
             new_product = form.save(commit=False)
             new_product.user = request.user
-
-            # ✅ Ambil kategori dari dropdown
-            cat_id = request.POST.get('category')
-            if cat_id:
-                try:
-                    category = Category.objects.get(id=cat_id)
-                    new_product.category = category
-                except Category.DoesNotExist:
-                    return render(request, 'create_product.html', {
-                        'form': form,
-                        'categories': categories,
-                        'error': {'category': ['Invalid category selected.']}
-                    })
-
             new_product.save()
             return redirect('main:show_main')
-        else:
-            # Jika form tidak valid, kirim ulang error ke template
-            return render(request, 'create_product.html', {
-                'form': form,
-                'categories': categories,
-                'error': form.errors
-            })
 
-    # GET request → tampilkan form kosong
-    return render(request, 'create_product.html', {
-        'form': form,
-        'categories': categories
-    })
+    return render(request, 'create_product.html', {'form': form})
+
 
     
 @login_required(login_url='/main/login/')
@@ -192,12 +167,14 @@ def delete_product(request, id):
 @csrf_exempt
 @require_POST
 def add_product_entry_ajax(request):
-    name = strip_tags(request.POST.get("name")) # strip HTML tags!
-    description = strip_tags(request.POST.get("description")) # strip HTML tags!
-    category = strip_tags(request.POST.get("category")) # strip HTML tags!
-    thumbnail = strip_tags(request.POST.get("thumbnail")) # strip HTML tags!
+    name = strip_tags(request.POST.get("name"))
+    description = strip_tags(request.POST.get("description"))
+    category = strip_tags(request.POST.get("category"))  # ✅ langsung string
+    thumbnail = strip_tags(request.POST.get("thumbnail"))
     is_featured = request.POST.get("is_featured") == 'on'
     user = request.user
+    price = int(request.POST.get("price", 0))
+    stock = int(request.POST.get("stock", 0))
 
     new_product = Product(
         name=name,
@@ -205,11 +182,14 @@ def add_product_entry_ajax(request):
         category=category,
         thumbnail=thumbnail,
         is_featured=is_featured,
+        price=price,
+        stock=stock,
         user=user
     )
     new_product.save()
 
     return HttpResponse(b"CREATED", status=201)
+
 
 
 

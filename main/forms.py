@@ -1,15 +1,16 @@
 from django import forms
 from django.forms import ModelForm
-from main.models import Category, Product
+from main.models import Product
 from django.utils.html import strip_tags
 
 #w
 
 class ProductForm(ModelForm):
-    category = forms.ModelChoiceField(
-        queryset=Category.objects.all(),
-        empty_label="Select category",
-        widget=forms.Select(attrs={'class': 'w-full bg-[#1a2233] text-white rounded-md p-2'})
+    category = forms.ChoiceField(
+        choices=Product.CATEGORY_CHOICES,
+        widget=forms.Select(attrs={
+            'class': 'w-full bg-[#1a2233] text-white rounded-md p-2'
+        })
     )
     class Meta:
         model = Product

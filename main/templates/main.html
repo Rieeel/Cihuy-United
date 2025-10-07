@@ -203,19 +203,6 @@
 
 <!-- Product Grid -->
 <div id="grid" class="hidden"></div>
-
-<!-- Empty State -->
-<div id="empty" class="bg-white rounded-lg border border-gray-200 p-12 text-center hidden">
-  <div class="w-32 h-32 mx-auto mb-4">
-    <img src="{% static 'image/no-product.png' %}" alt="No products available" class="w-full h-full object-contain">
-  </div>
-  <h3 class="text-lg font-medium text-gray-900 mb-2">No products found</h3>
-  <p class="text-gray-500 mb-6">Be the first to add a product to the catalog.</p>
-  <a href="{% url 'main:create_product' %}" class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
-    Add Product
-  </a>
-</div>
-
 <script>
 const PRODUCT_API_ENDPOINT = "{% url 'main:show_json' %}";
 const CURRENT_USER_ID = "{{ user.id|default_if_none:'' }}";
