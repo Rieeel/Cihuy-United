@@ -72,6 +72,7 @@ def show_json(request):
         {
             'id': str(product.id),
             'name': product.name,
+            'user': product.user.username if product.user else None,
             'description': product.description,
             'category': product.category,
             'thumbnail': product.thumbnail,
