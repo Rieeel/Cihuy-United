@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import *
 from django.core import serializers
 from urllib3 import request
@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags
+
 
 @login_required(login_url='/main/login/')
 def show_main(request):
@@ -114,6 +115,19 @@ def show_json_by_id(request, product_id):
     except Product.DoesNotExist:
         return JsonResponse({'detail': 'Not found'}, status=404)
 
+@csrf_exempt
+@require_POST
+def register_ajax(request):
+    form = UserCreationForm(request.POST)
+    if form.is_valid():
+        form.save()
+        return JsonResponse({'success': True, 'message': 'Your account has been successfully created!'})
+    else:
+        errors = {}
+        for field, error_list in form.errors.items():
+            errors[field] = [str(error) for error in error_list]
+        return JsonResponse({'success': False, 'errors': errors}, status=400)
+
 def register(request):
     form = UserCreationForm()
 
@@ -125,6 +139,24 @@ def register(request):
             return redirect('main:login')
     context = {'form':form}
     return render(request, 'register.html', context)
+
+@csrf_exempt
+@require_POST
+def login_ajax(request):
+    form = AuthenticationForm(data=request.POST)
+    if form.is_valid():
+        user = form.get_user()
+        login(request, user)
+        return JsonResponse({
+            'success': True, 
+            'message': 'Login successful!',
+            'redirect_url': reverse("main:show_main")
+        })
+    else:
+        errors = {}
+        for field, error_list in form.errors.items():
+            errors[field] = [str(error) for error in error_list]
+        return JsonResponse({'success': False, 'errors': errors}, status=400)
 
 def login_user(request):
    if request.method == 'POST':
@@ -190,6 +222,42 @@ def add_product_entry_ajax(request):
     new_product.save()
 
     return HttpResponse(b"CREATED", status=201)
+
+@csrf_exempt
+@require_POST
+def edit_product_ajax(request, id):
+    product = get_object_or_404(Product, pk=id)
+    if product.user != request.user:
+        return HttpResponseForbidden("You are not allowed to edit this product.")
+
+    name = strip_tags(request.POST.get("name"))
+    description = strip_tags(request.POST.get("description"))
+    category = strip_tags(request.POST.get("category"))
+    thumbnail = strip_tags(request.POST.get("thumbnail"))
+    is_featured = request.POST.get("is_featured") == 'on'
+    price = int(request.POST.get("price", 0))
+    stock = int(request.POST.get("stock", 0))
+
+    product.name = name
+    product.description = description
+    product.category = category
+    product.thumbnail = thumbnail
+    product.is_featured = is_featured
+    product.price = price
+    product.stock = stock
+    product.save()
+
+    return HttpResponse(b"UPDATED", status=200)
+
+@csrf_exempt
+@require_POST
+def delete_product_ajax(request, id):
+    product = get_object_or_404(Product, pk=id)
+    if product.user != request.user:
+        return HttpResponseForbidden("You are not allowed to delete this product.")
+
+    product.delete()
+    return HttpResponse(b"DELETED", status=200)
 
 
 
