@@ -14,6 +14,7 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.utils.html import strip_tags
+import json
 
 
 @login_required(login_url='/main/login/')
@@ -76,11 +77,14 @@ def show_json(request):
             'user': product.user.username if product.user else None,
             'description': product.description,
             'category': product.category,
+            'category_id': product.category,
             'thumbnail': product.thumbnail,
             'price': product.price,
             'stock': product.stock,
             'is_featured': product.is_featured,
             'user_id': product.user_id,
+            'created_at': product.created_at.isoformat() if hasattr(product, 'created_at') else None,
+            'views': product.views if hasattr(product, 'views') else 0,
         }
         for product in product_list
     ]
@@ -105,11 +109,15 @@ def show_json_by_id(request, product_id):
             'description': product.description,
             'price': product.price, 
             'stock': product.stock, 
-            'views': product.views,
+            'views': product.views if hasattr(product, 'views') else 0,
             'category': product.category,
+            'category_id': product.category,
             'thumbnail': product.thumbnail if product.thumbnail else None,
             'is_featured': product.is_featured,
             'user': product.user.username if product.user else None,
+            'user_name': product.user.username if product.user else 'Anonymous',
+            'user_id': product.user_id,
+            'created_at': product.created_at.isoformat() if hasattr(product, 'created_at') and product.created_at else None,
         }
         return JsonResponse(data)
     except Product.DoesNotExist:
@@ -202,7 +210,7 @@ def delete_product(request, id):
 def add_product_entry_ajax(request):
     name = strip_tags(request.POST.get("name"))
     description = strip_tags(request.POST.get("description"))
-    category = strip_tags(request.POST.get("category"))  # ✅ langsung string
+    category = strip_tags(request.POST.get("category"))
     thumbnail = strip_tags(request.POST.get("thumbnail"))
     is_featured = request.POST.get("is_featured") == 'on'
     user = request.user
@@ -259,7 +267,96 @@ def delete_product_ajax(request, id):
     product.delete()
     return HttpResponse(b"DELETED", status=200)
 
+@csrf_exempt
+def create_product_flutter(request):
+    # Endpoint untuk integrasi Flutter (POST JSON)
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
 
+        name = strip_tags(data.get("title") or data.get("name") or "")
+        description = strip_tags(data.get("content") or data.get("description") or "")
+        category = data.get("category", "")
+        thumbnail = data.get("thumbnail", "")
+        is_featured = data.get("is_featured", False)
+        price = data.get("price", 0)
+        stock = data.get("stock", 0)
+        user = request.user if request.user.is_authenticated else None
+
+        new_product = Product(
+            name=name,
+            description=description,
+            category=category,
+            thumbnail=thumbnail,
+            is_featured=is_featured,
+            price=price or 0,
+            stock=stock or 0,
+            user=user
+        )
+        new_product.save()
+
+        return JsonResponse({"status": "success", "id": str(new_product.id)}, status=201)
+    return JsonResponse({"status": "error", "message": "Invalid method"}, status=405)
+
+@csrf_exempt
+def delete_product_flutter(request, id):
+    if request.method == 'POST':
+        try:
+            # Gunakan filter karena ID adalah UUID
+            product = Product.objects.get(pk=id)
+            
+            # Verifikasi ownership
+            if product.user != request.user:
+                return JsonResponse({
+                    "status": "error",
+                    "message": "Unauthorized"
+                }, status=403)
+            
+            product.delete()
+            return JsonResponse({"status": "success"}, status=200)
+            
+        except Product.DoesNotExist:
+            return JsonResponse({
+                "status": "error",
+                "message": "Product not found"
+            }, status=404)
+    
+    return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
+
+@csrf_exempt
+def edit_product_flutter(request, id):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            product = Product.objects.get(pk=id)
+            
+            # Verifikasi ownership
+            if product.user != request.user:
+                return JsonResponse({
+                    "status": "error",
+                    "message": "Unauthorized"
+                }, status=403)
+            
+            # Update fields
+            product.name = data["name"]
+            product.price = data["price"]
+            product.description = data["description"]
+            product.thumbnail = data["thumbnail"]
+            product.category = data["category"]
+            product.is_featured = data.get("is_featured", False)
+            product.save()
+            
+            return JsonResponse({"status": "success"}, status=200)
+            
+        except Product.DoesNotExist:
+            return JsonResponse({
+                "status": "error",
+                "message": "Product not found"
+            }, status=404)
+    
+    return JsonResponse({"status": "error", "message": "Method not allowed"}, status=405)
 
 
 
